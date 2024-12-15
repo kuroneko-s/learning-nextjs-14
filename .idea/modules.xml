@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/clone-codding-carrot.iml" filepath="$PROJECT_DIR$/.idea/clone-codding-carrot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/carrot-clone.iml" filepath="$PROJECT_DIR$/.idea/carrot-clone.iml" />
     </modules>
   </component>
 </project>
