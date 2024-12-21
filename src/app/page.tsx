@@ -1,29 +1,101 @@
-import "./common.css";
+import Image from "next/image";
 
 export default function Home() {
-    return (
-        <main className={"w-full h-full flex flex-col items-center justify-center"}>
-            <div className={"bg-gray-200 w-full py-5 rounded-lg text-gray-900 shadow-md " +
-                "flex flex-col justify-start items-start px-4 gap-y-2 " +
-                "sm:bg-red-100 md:bg-green-200 lg:bg-blue-100 xl:bg-purple-100 2xl:bg-orange-100 " +
-                "md:flex-row md:gap-x-2 *:outline-none has-[:invalid]:ring-red-200 ring ring-transparent transition-shadow"}>
-                <input type={"text"} placeholder={"Address"} required
-                       className={"w-full rounded-full py-2 px-4 bg-gray-500 text-white ring-transparent " +
-                           "transition-shadow focus:shadow-outline focus:ring-2 " +
-                           "focus:ring-yellow-400 focus:ring-offset-2 " +
-                           "placeholder:text-white invalid:focus:ring-red-500 peer is-dirty"}/>
-                {/*그라데이션이 우선순위가 엄청 높음*/}
-                {/*bg-gradient-to-tr from-cyan-400 via-yellow-400  to-purple-400*/}
-                <span className={"text-red-500 font-medium hidden peer-invalid:block"}>Email is required</span>
-                <button className={"bg-opacity-95 text-white rounded-full px-4 py-2 w-full hover:bg-gray-800 " +
-                    "active:scale-90 transition-transform bg-black " +
-                    "focus:ring-2 ring-yellow-400 md:w-fit peer-[.is-dirty]:peer-invalid:bg-red-500 peer-invalid:text-gray-900"}>Log
-                    in
-                </button>
+  return (
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <Image
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+          <li className="mb-2">
+            Get started by editing{" "}
+            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
+              src/app/page.tsx
+            </code>
+            .
+          </li>
+          <li>Save and see your changes instantly.</li>
+        </ol>
 
-                {/*<input type={"text"} className={"peer is-normal"} required />*/}
-                {/*<button className={"bg-black peer-[.is-normal]:peer-invalid:bg-purple-200"}>Search2</button>*/}
-            </div>
-        </main>
-    );
+        <div className="flex gap-4 items-center flex-col sm:flex-row">
+          <a
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={20}
+              height={20}
+            />
+            Deploy now
+          </a>
+          <a
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read our docs
+          </a>
+        </div>
+      </main>
+      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/file.svg"
+            alt="File icon"
+            width={16}
+            height={16}
+          />
+          Learn
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/window.svg"
+            alt="Window icon"
+            width={16}
+            height={16}
+          />
+          Examples
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/globe.svg"
+            alt="Globe icon"
+            width={16}
+            height={16}
+          />
+          Go to nextjs.org →
+        </a>
+      </footer>
+    </div>
+  );
 }
