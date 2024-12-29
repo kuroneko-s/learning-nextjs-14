@@ -5,8 +5,16 @@ import Button from "@/components/Button";
 import {SmsLoginAction} from "@/app/sms/action";
 import {useActionState} from "react";
 
+const initialState = {
+    token: false,
+    payload: {
+        phone: "",
+        token: null
+    }
+}
+
 export default function SMSLogin() {
-    const [state, dispatch] = useActionState(SmsLoginAction, null);
+    const [state, dispatch] = useActionState(SmsLoginAction, initialState);
 
     return (
         <div className="flex flex-col gap-10 py-8 px-6">
@@ -18,16 +26,21 @@ export default function SMSLogin() {
                 <Input name="phone"
                        type="text"
                        placeholder="Phone number"
+                       defaultValue={state.payload.phone}
                        required
                 />
-                <Input
-                    name="token"
-                    type="number"
-                    placeholder="Verification code"
-                    required
-                    min={100000}
-                    max={999999}
-                />
+                {state.token ?
+                    <Input
+                        name="token"
+                        type="number"
+                        placeholder="Verification code"
+                        required
+                        defaultValue={state.payload?.token ?? ""}
+                        min={100000}
+                        max={999999}
+                    />
+                    : null
+                }
                 <Button text="Verify"/>
             </form>
         </div>
