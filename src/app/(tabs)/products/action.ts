@@ -3,7 +3,7 @@
 import db from "@/lib/db";
 
 export async function getMoreProducts(page: number) {
-    const products = await db.product.findMany({
+    return db.product.findMany({
         select: {
             title: true,
             price: true,
@@ -17,5 +17,4 @@ export async function getMoreProducts(page: number) {
             created_at: "desc",
         },
     });
-    return products;
 }
