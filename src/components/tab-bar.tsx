@@ -1,18 +1,18 @@
 "use client";
 
 import {
+    ChatBubbleOvalLeftEllipsisIcon as SolidChatIcon,
     HomeIcon as SolidHomeIcon,
     NewspaperIcon as SolidNewspaperIcon,
-    ChatBubbleOvalLeftEllipsisIcon as SolidChatIcon,
-    VideoCameraIcon as SolidVideoCameraIcon,
     UserIcon as SolidUserIcon,
+    VideoCameraIcon as SolidVideoCameraIcon,
 } from "@heroicons/react/24/solid";
 import {
+    ChatBubbleOvalLeftEllipsisIcon as OutlineChatIcon,
     HomeIcon as OutlineHomeIcon,
     NewspaperIcon as OutlineNewspaperIcon,
-    ChatBubbleOvalLeftEllipsisIcon as OutlineChatIcon,
-    VideoCameraIcon as OutlineVideoCameraIcon,
     UserIcon as OutlineUserIcon,
+    VideoCameraIcon as OutlineVideoCameraIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
@@ -21,7 +21,7 @@ export default function TabBar() {
     const pathname = usePathname();
     return (
         <div
-            className="fixed bottom-0 w-full mx-auto max-w-screen-md grid grid-cols-5 border-neutral-600 border-t px-5 py-3 *:text-white bg-neutral-800">
+            className="fixed bottom-0 w-full mx-auto max-w-[480px] grid grid-cols-5 border-neutral-600 border-t px-5 py-3 *:text-white bg-neutral-800">
             <Link href="/products" className="flex flex-col items-center gap-px">
                 {pathname === "/products" ? (
                     <SolidHomeIcon className="w-7 h-7"/>
