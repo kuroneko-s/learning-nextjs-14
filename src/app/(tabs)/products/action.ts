@@ -12,7 +12,7 @@ export async function getMoreProducts(page: number) {
             id: true,
         },
         skip: page * 1,
-        take: 1,
+        take: 10,
         orderBy: {
             created_at: "desc",
         },

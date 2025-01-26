@@ -1,23 +1,11 @@
 'use server'
 
-import {z} from "zod";
-import fs from "fs/promises";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import {redirect} from "next/navigation";
+import {productSchema} from "@/app/products/upload/schema";
+import fs from "fs/promises";
 
-const productSchema = z.object({
-    title: z.string({
-        required_error: "상품명은 필수값"
-    }),
-    description: z.string({
-        required_error: "설명이 있어야만 함"
-    }),
-    file: z.string({
-        required_error: "사진은 필수값임"
-    }),
-    price: z.coerce.number(),
-})
 
 export default async function UploadAction(prevState: any, formData: FormData) {
     const data = {
@@ -26,6 +14,8 @@ export default async function UploadAction(prevState: any, formData: FormData) {
         price: formData.get("price"),
         file: formData.get("file")
     };
+
+    console.log(data);
 
     if (data.file instanceof File) {
         const fileData = await data.file.arrayBuffer();
