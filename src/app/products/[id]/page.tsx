@@ -1,10 +1,12 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
-import { formatToWon } from "@/lib/utils";
-import { UserIcon } from "@heroicons/react/24/solid";
+import {formatToWon} from "@/lib/utils";
+import {UserIcon} from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import {notFound} from "next/navigation";
+import Loadable from "next/dist/shared/lib/loadable.shared-runtime";
+import preloadAll = Loadable.preloadAll;
 
 async function getIsOwner(userId: number) {
     const session = await getSession();
@@ -31,20 +33,29 @@ async function getProduct(id: number) {
     return product;
 }
 
-export default async function ProductDetail({
-                                                params,
-                                            }: {
-    params: { id: string };
-}) {
-    const id = Number(params.id);
-    if (isNaN(id)) {
+export async function generateMetadata({params} : {params : Promise<{ id: string }>}) {
+    const {id} = await params;
+    return {
+        title: "product!! " + id
+    }
+}
+
+export default async function ProductDetail({params} : {params : Promise<{ id: string }>}) {
+    const {id} = await params;
+
+    if (!id) return <div>parameter wait...</div>
+
+    const _id = Number(id);
+    if (isNaN(_id)) {
         return notFound();
     }
-    const product = await getProduct(id);
+    const product = await getProduct(_id);
     if (!product) {
         return notFound();
     }
     const isOwner = await getIsOwner(product.userId);
+
+    console.log("runnnnnnnnn");
     return (
         <div>
             <div className="relative aspect-square">

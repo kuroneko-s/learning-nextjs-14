@@ -1,30 +1,42 @@
 "use client";
 
-import {InitialProducts} from "@/app/(tabs)/products/page";
 import ListProduct from "./list-product";
 import {useEffect, useRef, useState} from "react";
-import {getMoreProducts} from "@/app/(tabs)/products/action";
+import {getProducts} from "@/app/(tabs)/products/action";
+import {getProductList, getProductsCnt, ProductListItem} from "@/lib/product";
 
-interface ProductListProps {
-    initialProducts: InitialProducts;
-}
 
-export default function ProductList({ initialProducts }: ProductListProps) {
-    const [products, setProducts] = useState(initialProducts);
+export default function ProductList() {
+    const [products, setProducts] = useState<ProductListItem | []>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [isLast, setIsLast] = useState(false);
+    const [productCnt, setProductCnt] = useState(0);
     const trigger = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
+        // init
+        (async () => {
+            setProductCnt(await getProductsCnt());
+
+            const initProducts = await getProductList(0);
+            setProducts(initProducts);
+
+            if (initProducts.length < productCnt) {
+                setIsLast(false);
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
         const observer = new IntersectionObserver(
-            async (entries, observer1) => {
+            async (entries) => {
                 const element = entries[0];
 
                 if (element.isIntersecting && trigger.current) {
                     observer.unobserve(trigger.current);
                     setIsLoading(true);
-                    const newProducts = await getMoreProducts(page);
+                    const newProducts = await getProductList(page);
                     if (newProducts.length === 0) {
                         setIsLast(true);
                     } else {
@@ -32,6 +44,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
                         setProducts((prev) => [...prev, ...newProducts]);
                     }
                     setIsLoading(false);
+                    window.scrollTo(0, 0);
                 }
             }, {
                 threshold: 1.0
@@ -56,7 +69,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
                 ref={trigger}
                 disabled={isLoading}
                 style={{
-                    marginTop: `${page + 1 * 900}vh`
+                    marginTop: `${page + 1 * 100}vh`
                 }}
                 className="mb-80 text-sm font-semibold bg-orange-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
             >
