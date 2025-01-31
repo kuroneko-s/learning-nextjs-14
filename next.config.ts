@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
             bodySizeLimit: '25mb'
         }
     },
+    images: {
+        remotePatterns: [
+            {
+                hostname: "avatars.githubusercontent.com"
+            }
+        ]
+    }
 };
 
 export default nextConfig;
