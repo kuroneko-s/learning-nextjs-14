@@ -44,7 +44,6 @@ export default function AddProduct() {
 
     const onSubmit = handleSubmit( async (data: ProductType) => {
         // 검증이 끝난 후 호출된다.
-        console.log('zod work result - ', data);
         if (!file) return;
 
         const formData = new FormData();
@@ -59,8 +58,6 @@ export default function AddProduct() {
     const onValid = async () => {
         await onSubmit();
     }
-
-    console.log(register("title"));
 
     return <div>
         <form action={onValid} className="flex flex-col gap-3">

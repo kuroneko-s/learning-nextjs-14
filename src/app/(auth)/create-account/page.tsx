@@ -1,10 +1,10 @@
 "use client";
 
-import {createAccount} from "@/app/(auth)/create-account/action";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import SocialLogin from "@/components/SocialLogin";
 import {useActionState} from "react";
+import {createAccount} from "@/app/(auth)/create-account/action";
 
 export default function CreateAccount() {
     const [state, dispatch] = useActionState(createAccount, null);

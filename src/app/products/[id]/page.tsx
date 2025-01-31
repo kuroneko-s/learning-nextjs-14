@@ -5,18 +5,19 @@ import {UserIcon} from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import {notFound} from "next/navigation";
-import Loadable from "next/dist/shared/lib/loadable.shared-runtime";
-import preloadAll = Loadable.preloadAll;
+import {revalidatePath, revalidateTag, unstable_cache as nextCache} from "next/cache";
 
 async function getIsOwner(userId: number) {
-    const session = await getSession();
-    if (session.id) {
-        return session.id === userId;
-    }
+    // cookie 값을 사용하고 있으므로 dynamic 으로 컴파일됨. 주석처리
+    // const session = await getSession();
+    // if (session.id) {
+    //     return session.id === userId;
+    // }
     return false;
 }
 
 async function getProduct(id: number) {
+    console.log("product")
     const product = await db.product.findUnique({
         where: {
             id,
@@ -33,10 +34,41 @@ async function getProduct(id: number) {
     return product;
 }
 
+async function getProductTitle(id: number) {
+    console.log("title");
+    const product = await db.product.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            title: true
+        }
+    });
+    return product;
+}
+
+const getCachedProduct = nextCache(
+    getProduct,
+    ["product-detail"],
+    {
+        tags: ["product-detail"]
+    }
+)
+
+const getCahcedProductTitle = nextCache(
+    getProductTitle,
+    ["product-detail-title"],
+    {
+        tags: ["product-detail-title"]
+    }
+)
+
 export async function generateMetadata({params} : {params : Promise<{ id: string }>}) {
     const {id} = await params;
+    const product = await getCahcedProductTitle(Number(id));
+
     return {
-        title: "product!! " + id
+        title: "product!! " + product!.title
     }
 }
 
@@ -49,13 +81,16 @@ export default async function ProductDetail({params} : {params : Promise<{ id: s
     if (isNaN(_id)) {
         return notFound();
     }
-    const product = await getProduct(_id);
+
+    const product = await getCachedProduct(_id);
     if (!product) {
         return notFound();
     }
     const isOwner = await getIsOwner(product.userId);
-
-    console.log("runnnnnnnnn");
+    const revalidate = async () => {
+        "use server"
+        revalidateTag("product-detail-title");
+    }
     return (
         <div>
             <div className="relative aspect-square">
@@ -92,9 +127,15 @@ export default async function ProductDetail({params} : {params : Promise<{ id: s
           {formatToWon(product.price)}원
         </span>
                 {isOwner ? (
+                    <form action={async () => {
+                        "use server"
+                        // revalidatePath("/products/[id]", "page");
+                        revalidateTag("product-detail-title");
+                    }}>
                     <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-                        Delete product
+                        revalidate
                     </button>
+                    </form>
                 ) : null}
                 <Link
                     className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
@@ -105,4 +146,20 @@ export default async function ProductDetail({params} : {params : Promise<{ id: s
             </div>
         </div>
     );
+}
+
+// true => 정적 페이지로 만들어지지않은 페이지가 호출 됬을 경우에 디비에서 값 가져온다음 그 값을 정적 페이지로 만들어줌.
+// false => 그냥 not found 내버림 (정적으로 만든 페이지만 보여줌).
+export const dynamicParams = true;
+
+// 파라미터 값 미리 채워넣기
+export async function generateStaticParams() {
+    // 지나치게 많은 값을 정적 페이지로 생성하면 부하가 걸리니 선택해야함.
+    const result = await db.product.findMany({
+        select: {
+            id: true
+        }
+    });
+
+    return result.map(product => ({id : product.id + ""})) ?? [];
 }

@@ -2,31 +2,19 @@
 
 import ListProduct from "./list-product";
 import {useEffect, useRef, useState} from "react";
-import {getProducts} from "@/app/(tabs)/products/action";
-import {getProductList, getProductsCnt, ProductListItem} from "@/lib/product";
+import {getProductList, ProductListItem} from "@/lib/product";
 
+interface ProductListParmas {
+    initProducts: ProductListItem;
+    productsCnt: number;
+}
 
-export default function ProductList() {
-    const [products, setProducts] = useState<ProductListItem | []>([]);
+export default function ProductList({initProducts, productsCnt} : ProductListParmas) {
+    const [products, setProducts] = useState<ProductListItem | []>(initProducts);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const [isLast, setIsLast] = useState(false);
-    const [productCnt, setProductCnt] = useState(0);
+    const [isLast, setIsLast] = useState(initProducts.length === productsCnt);
     const trigger = useRef<HTMLButtonElement>(null);
-
-    useEffect(() => {
-        // init
-        (async () => {
-            setProductCnt(await getProductsCnt());
-
-            const initProducts = await getProductList(0);
-            setProducts(initProducts);
-
-            if (initProducts.length < productCnt) {
-                setIsLast(false);
-            }
-        })();
-    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(

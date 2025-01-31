@@ -15,8 +15,6 @@ export default async function UploadAction(prevState: any, formData: FormData) {
         file: formData.get("file")
     };
 
-    console.log(data);
-
     if (data.file instanceof File) {
         const fileData = await data.file.arrayBuffer();
         await fs.appendFile(`./public/${data.file.name}`, Buffer.from(fileData));
