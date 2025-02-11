@@ -1,11 +1,10 @@
 import db from "@/lib/db";
-import getSession from "@/lib/session";
 import {formatToWon} from "@/lib/utils";
 import {UserIcon} from "@heroicons/react/24/solid";
 import Image from "next/image";
-import Link from "next/link";
-import {notFound} from "next/navigation";
-import {revalidatePath, revalidateTag, unstable_cache as nextCache} from "next/cache";
+import {notFound, redirect} from "next/navigation";
+import {revalidateTag, unstable_cache as nextCache} from "next/cache";
+import getSession from "@/lib/session";
 
 async function getIsOwner(userId: number) {
     // cookie 값을 사용하고 있으므로 dynamic 으로 컴파일됨. 주석처리
@@ -63,7 +62,7 @@ const getCahcedProductTitle = nextCache(
     }
 )
 
-export async function generateMetadata({params} : {params : Promise<{ id: string }>}) {
+export async function generateMetadata({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
     const product = await getCahcedProductTitle(Number(id));
 
@@ -72,7 +71,7 @@ export async function generateMetadata({params} : {params : Promise<{ id: string
     }
 }
 
-export default async function ProductDetail({params} : {params : Promise<{ id: string }>}) {
+export default async function ProductDetail({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
 
     if (!id) return <div>parameter wait...</div>
@@ -111,7 +110,7 @@ export default async function ProductDetail({params} : {params : Promise<{ id: s
                             alt={product.user.username}
                         />
                     ) : (
-                        <UserIcon />
+                        <UserIcon/>
                     )}
                 </div>
                 <div>
@@ -132,17 +131,42 @@ export default async function ProductDetail({params} : {params : Promise<{ id: s
                         // revalidatePath("/products/[id]", "page");
                         revalidateTag("product-detail-title");
                     }}>
-                    <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-                        revalidate
-                    </button>
+                        <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
+                            revalidate
+                        </button>
                     </form>
                 ) : null}
-                <Link
-                    className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
-                    href={``}
-                >
-                    채팅하기
-                </Link>
+                <form action={ async () => {
+                    "use server";
+                    const session = await getSession();
+
+                    // create chat room
+                    const room = await db.chatRoom.create({
+                        data: {
+                            users: {
+                                connect: [
+                                    {
+                                        id: product.userId
+                                    },
+                                    {
+                                        id: session.id
+                                    }
+                                ]
+                            }
+                        },
+                        select: {
+                            id: true
+                        }
+                    })
+
+                    redirect(`/chats/${room.id}`)
+                }}>
+                    <button
+                        className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
+                    >
+                        채팅하기
+                    </button>
+                </form>
             </div>
         </div>
     );
@@ -161,5 +185,5 @@ export async function generateStaticParams() {
         }
     });
 
-    return result.map(product => ({id : product.id + ""})) ?? [];
+    return result.map(product => ({id: product.id + ""})) ?? [];
 }

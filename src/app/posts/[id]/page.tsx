@@ -5,6 +5,7 @@ import Image from "next/image";
 import getSession from "@/lib/session";
 import {unstable_cache as nextCache} from "next/cache";
 import LikeButton from "@/components/like-button";
+import {formatToTimeAgo} from "@/lib/utils";
 
 async function getPost(id: number) {
     try {
@@ -109,7 +110,7 @@ export default async function PostDetail({params}: { params: Promise<{ id: strin
                 <div>
                     <span className="text-sm font-semibold">{post.user.username}</span>
                     <div className="text-xs">
-                        {/*<span>{formatToTimeAgo(post.created_at.toString())}</span>*/}
+                        <span>{formatToTimeAgo(post.created_at.toString())}</span>
                     </div>
                 </div>
             </div>
